@@ -1,0 +1,18 @@
+{
+  "manifest_version": 3,
+  "name": "YouTube Audio Normalizer",
+  "version": "1.0",
+  "description": "自動平衡 YouTube 各影片的音量，並濾除 20Hz 以下和 20kHz 以上的有害頻率",
+  "permissions": ["storage", "activeTab"],
+  "content_scripts": [
+    {
+      "matches": ["*://www.youtube.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "YouTube Audio Normalizer"
+  }
+}
