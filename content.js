@@ -13,6 +13,9 @@
 (function () {
   'use strict';
 
+  // 給外部測試用（在 Console 輸入 window.__audioNormActive 可確認腳本有跑）
+  window.__audioNormActive = true;
+
   // 預設設定
   const DEFAULT_SETTINGS = {
     enabled: true,
