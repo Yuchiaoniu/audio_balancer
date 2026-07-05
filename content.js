@@ -13,8 +13,9 @@
 (function () {
   'use strict';
 
-  // 給外部測試用（在 Console 輸入 window.__audioNormActive 可確認腳本有跑）
-  window.__audioNormActive = true;
+  // 給外部測試用——寫在 DOM attribute，因為 MV3 isolated world 的 window 對外不可見
+  // 可在 Console 輸入 document.documentElement.dataset.audioNormActive 確認
+  document.documentElement.dataset.audioNormActive = 'true';
 
   // 預設設定
   const DEFAULT_SETTINGS = {
