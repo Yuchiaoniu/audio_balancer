@@ -73,6 +73,12 @@
       ctx = new (window.AudioContext || window.webkitAudioContext)();
     }
 
+    // Brave/Chrome autoplay 政策：若 AudioContext 是 suspended，嘗試 resume
+    // play 事件本身是使用者手勢，ctx.resume() 在此時機呼叫會被瀏覽器放行
+    if (ctx.state === 'suspended') {
+      ctx.resume().catch(() => {});
+    }
+
     // 避免重複掛載同一個 video 元素
     if (sourceNode && currentVideo === video) return;
 
@@ -131,10 +137,19 @@
   }
 
   function attachToVideo() {
+    // 延遲掛載：等使用者按播放後才建立 AudioContext，避免觸發 autoplay 政策
+    function doAttach(video) {
+      if (!video.paused) {
+        buildChain(video);                                            // 已在播放，直接掛
+      } else {
+        video.addEventListener('play', () => buildChain(video), { once: true }); // 等按播放
+      }
+    }
+
     // 嘗試直接找已存在的 video 元素
     const video = document.querySelector('video');
     if (video) {
-      buildChain(video);
+      doAttach(video);
       return;
     }
 
@@ -143,7 +158,7 @@
       const v = document.querySelector('video');
       if (v) {
         observer.disconnect();
-        buildChain(v);
+        doAttach(v);
       }
     });
     observer.observe(document.body, { childList: true, subtree: true });
